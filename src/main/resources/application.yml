@@ -1,0 +1,47 @@
+server:
+  port: 8000
+
+#spring.profiles.active为spring读取的配置文件名，从数据库中读取，必须为jdbc
+spring:
+  profiles:
+    active: jdbc
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: fireconfig
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/config?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+  cloud:
+    config:
+      label: master
+      server:
+        jdbc: true
+#spring.cloud.config.label读取的配置的分支，这个需要在数据库中数据对应
+
+#spring.cloud.config.server.jdbc.sql为查询数据库的sql语句，该语句的字段必须与数据库的表字段一致。
+
+spring.cloud.config.server.jdbc.sql: SELECT key1, value1 from config_properties where APPLICATION=? and PROFILE=? and LABEL=?
+
+
+eureka:
+  enabled: true
+  instance:
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 10 #定期心跳
+  client:
+    enabled: true
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://fire:huo@registrationcenter.fire.com:8761/eureka
+
+logging:
+  level:
+    root: info
+  file:
+    name: /opt/fire/config/logs/log.log
+    path: /opt/fire/config/logs
+
+
